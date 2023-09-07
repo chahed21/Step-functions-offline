@@ -46,7 +46,7 @@ stepFunctions:
                 NumericEquals: 10           # Condition to evaluate
                 Next: ChoicePath1           # Next state if condition is true
               - Variable: "$.inputVariable"
-                NumericEquals: 20
+                NumericEquals: 30
                 Next: ChoicePath2
           ChoicePath1:
             Type: Task
