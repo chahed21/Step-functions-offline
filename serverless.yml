@@ -1,6 +1,5 @@
 service: stepfunctions
 
-frameworkVersion: '2'
 
 plugins:
   - serverless-step-functions-local
@@ -8,30 +7,27 @@ plugins:
   - serverless-offline-lambda
   - serverless-offline
 
+provider:
+  name: aws
+  runtime: nodejs14.x # supported nodejs versions: https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
+
+
 custom:
   serverless-offline:
+    httpPort: 3002 # Change this to the desired port
   stepFunctionsLocal:
     accountId: 101010101010
     region: us-east-1
+    lambda_endpoint: localhost:3002
     TaskResourceMapping:
-      FirstState: arn:aws:lambda:us-east-1:101010101010:function:hello
-      FinalState: arn:aws:lambda:us-east-1:101010101010:function:world
-
-provider:
-  name: aws
-  runtime: nodejs12.x
+      ChoicePath1: arn:aws:lambda:us-east-1:101010101010:function:${self:service}-${opt:stage, self:provider.stage}-hello
+      ChoicePath2: arn:aws:lambda:us-east-1:101010101010:function:${self:service}-${opt:stage, self:provider.stage}-world
 
 functions:
   hello:
     handler: handler.hello
   world:
     handler: handler.world
-  startSF:
-    handler: handler.startSF
-    events:
-      - http:
-          path: hello
-          method: GET
 
 stepFunctions:
   stateMachines:
@@ -41,15 +37,20 @@ stepFunctions:
         StartAt: FirstState
         States:
           FirstState:
+            Type: Choice
+            Choices:
+              - Variable: "$.inputVariable"  # Variable to evaluate
+                NumericEquals: 10           # Condition to evaluate
+                Next: ChoicePath1           # Next state if condition is true
+              - Variable: "$.inputVariable"
+                NumericEquals: 20
+                Next: ChoicePath2
+          ChoicePath1:
             Type: Task
             Resource: 
               Fn::GetAtt: [hello, Arn]
-            Next: wait_using_seconds
-          wait_using_seconds:
-            Type: Wait
-            Seconds: 10
-            Next: FinalState
-          FinalState:
+            End: true
+          ChoicePath2:
             Type: Task
             Resource: 
               Fn::GetAtt: [world, Arn]
