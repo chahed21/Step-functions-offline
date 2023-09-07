@@ -26,7 +26,8 @@ custom:
 
 functions:
   hello:
-    handler: handler.hello
+    runtime: python3.7
+    handler: handlerPython.hello
   world:
     handler: handler.world
   
@@ -46,7 +47,7 @@ stepFunctions:
                 NumericEquals: 10           # Condition to evaluate
                 Next: ChoicePath1           # Next state if condition is true
               - Variable: "$.inputVariable"
-                NumericEquals: 30
+                NumericEquals: 20
                 Next: ChoicePath2
           ChoicePath1:
             Type: Task

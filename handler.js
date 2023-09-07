@@ -25,5 +25,5 @@ module.exports.there = async event => {
 
 module.exports.world = async event => {
   console.log('world')
-  return { message: 'Final thing!!!', event }
+  return { message: 'NodeJs runtime works"', event }
 }
