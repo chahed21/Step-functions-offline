@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk')
 module.exports.startSF = (event, context, callback) => {
   const stepFunctions = new AWS.StepFunctions({ endpoint: 'http://localhost:8083' })
-  const stateMachineArn = process.env.OFFLINE_STEP_FUNCTIONS_ARN_WaitMachine
+  const stateMachineArn = "arn:aws:states:us-east-1:101010101010:stateMachine:WaitMachine"
   const params = {
     stateMachineArn
   }
