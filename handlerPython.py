@@ -2,6 +2,7 @@ import json
 
 
 def hello(event, context):
+    print('hello')
     body = {
         "message": "Python runtime works",
         "input": event,
